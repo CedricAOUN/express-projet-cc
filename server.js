@@ -7,6 +7,8 @@ app.use(express.json())
 app.get('/api/v1/whisper', async (req, res) => {
     res.json(await getAll())
 })
+app.set('view engine', 'ejs');
+app.use("/public", express.static('public'));
 
 app.get('/api/v1/whisper/:id', async (req, res) => {
     const id = parseInt(req.params.id)
@@ -28,3 +30,11 @@ app.delete('/api/v1/whisper/:id', async (req, res) => {
 })
 
 export { app }
+app.get('/about', (req, res) => {
+    const whisperCount = 42;
+    res.render('about', { title: 'About Page', whisperCount });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

@@ -1,0 +1,12 @@
+<%- include('header', { title: 'About' }) %>
+<div class="container mt-4 text-center d-flex flex-column align-items-center gap-2">
+  <h1 class="fs-3 fw-bold">Welcome to Whispering!</h1>
+  <img src="public/people.png" alt="People" width="500" height="400" />
+
+  <h3 class="fs-4 fw-bold">What is Whispering?</h3>
+  <p>Whispering is a microblogging platform that allows you to share your thoughts with the world and learn Node.js on the way.</p>
+
+  <h3 class="fs-4 fw-bold">Community live ⚡</h3>
+  <p>There are <%= whisperCount %> whispers available</p>
+</div>
+<%- include('footer') %>
