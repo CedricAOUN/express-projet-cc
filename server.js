@@ -3,12 +3,12 @@ import { getAll, getById, create, updateById, deleteById } from './store.js'
 
 const app = express()
 app.use(express.json())
+app.set('view engine', 'ejs');
+app.use("/public", express.static('public'));
 
 app.get('/api/v1/whisper', async (req, res) => {
     res.json(await getAll())
 })
-app.set('view engine', 'ejs');
-app.use("/public", express.static('public'));
 
 app.get('/api/v1/whisper/:id', async (req, res) => {
     const id = parseInt(req.params.id)
