@@ -12,20 +12,48 @@ app.get('/api/v1/whisper', async (req, res) => {
 
 app.get('/api/v1/whisper/:id', async (req, res) => {
   const id = parseInt(req.params.id)
-  res.json(await getById(id))
+  const whisper = await getById(id)
+  if (!whisper) {
+    res.sendStatus(404)
+  } else {
+    res.json(whisper)
+  }
 })
 
 app.post('/api/v1/whisper', async (req, res) => {
-  res.status(201).json(await create(req.body.message))
+  const { message } = req.body
+  if (!message) {
+    res.sendStatus(400)
+  } else {
+    const whisper = await create(message)
+    res.status(201).json(whisper)
+  }
 })
 
 app.put('/api/v1/whisper/:id', async (req, res) => {
-  await updateById(parseInt(req.params.id), req.body.message)
-  res.sendStatus(200)
+  const { message } = req.body
+  const id = parseInt(req.params.id)
+  if (!message) {
+    res.sendStatus(400)
+  } else {
+    const whisper = await getById(id)
+    if (!whisper) {
+      res.sendStatus(404)
+    } else {
+      await updateById(id, message)
+      res.sendStatus(200)
+    }
+  }
 })
 
 app.delete('/api/v1/whisper/:id', async (req, res) => {
-  await deleteById(parseInt(req.params.id))
+  const id = parseInt(req.params.id)
+  const whisper = await getById(id)
+  if (!whisper) {
+    res.sendStatus(404)
+    return
+  }
+  await deleteById(id)
   res.sendStatus(200)
 })
 

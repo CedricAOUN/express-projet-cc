@@ -1,16 +1,9 @@
 import { getAll, getById, create, updateById, deleteById } from '../store.js'
-import { writeFileSync } from 'node:fs'
-import { join } from 'node:path'
-
-const dbPath = join(process.cwd(), 'db.json')
-const restoreDb = () => writeFileSync(dbPath, JSON.stringify([]))
-const populateDb = (data) => writeFileSync(dbPath, JSON.stringify(data))
-const fixtures = [{ id: 1, message: 'Hello World' }, { id: 2, message: 'Hello Again' }]
-const inventedId = 999
-const existingId = fixtures[0].id
+import { restoreDb, populateDb } from './utils.js'
+import { whispers, inventedId, existingId } from './fixtures.js'
 
 describe('store', () => {
-  beforeEach(() => populateDb(fixtures))
+  beforeEach(() => populateDb(whispers))
   afterAll(() => restoreDb())
 
   describe('getById', () => {
@@ -22,7 +15,7 @@ describe('store', () => {
 
     it('should return all data', async () => {
       const data = await getAll()
-      expect(data).toEqual(fixtures)
+      expect(data).toEqual(whispers)
     })
   })
 
@@ -33,7 +26,7 @@ describe('store', () => {
     })
     it('should return correct item if id exists', async () => {
       const data = await getById(existingId)
-      expect(data).toEqual(fixtures[0])
+      expect(data).toEqual(whispers[0])
     })
   })
 
@@ -44,7 +37,7 @@ describe('store', () => {
       expect(newItem).toEqual({ id: 3, message })
     })
     it('should add item to the db', async () => {
-      const newItem = { id: fixtures.length + 1, message: 'test-3' }
+      const newItem = { id: whispers.length + 1, message: 'test-3' }
       const { id } = await create(newItem.message)
       const item = await getById(id)
       expect(item).toEqual(newItem)
@@ -80,7 +73,7 @@ describe('store', () => {
     it('should delete item from the db', async () => {
       await deleteById(existingId)
       const items = await getAll()
-      expect(items).toEqual(fixtures.filter(item => item.id !== existingId))
+      expect(items).toEqual(whispers.filter(item => item.id !== existingId))
     })
   })
 })
