@@ -1,18 +1,30 @@
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-const ejs = require('ejs');
-const dotenv = require('dotenv');
+import express from 'express'
+import { getAll, getById, create, updateById, deleteById } from './store.js'
 
-dotenv.config();
+const app = express()
+app.use(express.json())
 
-app.set('view engine', 'ejs');
-app.use('/styles', express.static('styles'));
+app.get('/api/v1/whisper', async (req, res) => {
+    res.json(await getAll())
+})
 
-app.get('/', (req, res) => {
-    res.render('index', { title: 'Home Page' });
-});
+app.get('/api/v1/whisper/:id', async (req, res) => {
+    const id = parseInt(req.params.id)
+    res.json(await getById(id))
+})
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.post('/api/v1/whisper', async (req, res) => {
+    res.status(201).json(await create(req.body.message))
+})
+
+app.put('/api/v1/whisper/:id', async (req, res) => {
+    await updateById(parseInt(req.params.id), req.body.message)
+    res.sendStatus(200)
+})
+
+app.delete('/api/v1/whisper/:id', async (req, res) => {
+    await deleteById(parseInt(req.params.id))
+    res.sendStatus(200)
+})
+
+export { app }
