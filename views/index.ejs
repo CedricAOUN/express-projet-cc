@@ -1,3 +1,49 @@
 <%- include('header', { title: 'Home' }) %>
-<h1>Welcome to the Home Page</h1>
+<div class="container text-center mt-4"> 
+  <button id="addButton" class="bg-primary text-white py-2 px-4 rounded">Spead a whisper 🤭</button>
+  <div class="border-top my-4"></div>
+  <% whispers.forEach(whisper => { %>
+    <div class="card mb-3 bg-light p-1">
+      <div class="align-self-end">
+        <button class="bg-warning text-white py-1 px-2 rounded" onclick="editWhisper(<%= whisper.id %>, '<%= whisper.message %>')" >✏️</button>
+        <button class="bg-danger text-white py-1 px-2 rounded" onclick="deleteWhisper(<%= whisper.id %>)">🗑️</button>
+      </div>
+      <div class="card-body">
+        <p class="card-text"><%= whisper.message %></p>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<script>
+  document.getElementById('addButton').addEventListener('click', async () => {
+    const message = prompt('Enter your whisper:');
+    if (message) {
+      await fetch('/api/v1/whisper', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      location.reload();
+    }
+  });
+
+  async function editWhisper(id, current) {
+    const message = prompt('Edit whisper:', current);
+    if (message && message !== current) {
+      await fetch(`/api/v1/whisper/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      location.reload();
+    }
+  }
+
+  async function deleteWhisper(id) {
+    await fetch(`/api/v1/whisper/${id}`, { method: 'DELETE' });
+    location.reload();
+  }
+</script>
+
 <%- include('footer') %>

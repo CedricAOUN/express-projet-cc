@@ -29,12 +29,13 @@ app.delete('/api/v1/whisper/:id', async (req, res) => {
     res.sendStatus(200)
 })
 
-export { app }
-app.get('/about', (req, res) => {
-    const whisperCount = 42;
+app.get('/', async (req, res) => {
+    res.render('index', { title: 'Home Page', whispers: await getAll() });
+});
+
+app.get('/about', async (req, res) => {
+    const whisperCount = (await getAll()).length;
     res.render('about', { title: 'About Page', whisperCount });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+export { app }
